@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Form Clone</title>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/jquery-ui.css">
+    <style>
+        .navbar-custom {
+            background-color: rgb(103, 58, 183);
+            color: white;
+            border-radius: 0;
+        }
+
+        .navbar-custom .navbar-brand {
+            color: white;
+            font-size: 18px; /* Adjust font size for navbar links */
+        }
+
+        .navbar-custom .navbar-nav > li > a {
+            color: white;
+            font-size: 16px; /* Adjust font size for navbar links */
+        }
+
+        /* Additional styling for submit button */
+        #submit-btn {
+            margin-top: 20px;
+            float: left; /* Align button to the left */
+            clear: both; /* Clear float to ensure proper layout */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-custom">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="<?php echo base_url(); ?>home/index2">Google Forms</a>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>home/index3">Home</a>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>home/index1">About</a>
+            </div>
+            <div id="navbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <a class="navbar-brand" href="<?php echo base_url(); ?>users/logout">Logout</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-header">
+            <button id="preview-btn" class="btn btn-info"><i class="fas fa-eye"></i></button>
+            <h2>Untitled Form</h2>
+            <button id="add-section-btn" class="btn btn-primary">+</button>
+        </div>
+        <div id="form-container"></div>
+
+        <!-- Submit button -->
+        <button class="btn btn-success" style="margin-left: 240px; margin-top: 20px">Submit</button>
+    </div>
+
+    <script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/bootstrap.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/jquery-ui.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/scripts.js'); ?>"></script>
+</body>
+
+</html>
+$(document).ready(function() {
+    let index = 1;
+    let activeSection = null;
+
+    // Add option function
+    function addOption(type, container) {
+        let optionIndex = container.children().length + 1;
+        let optionHtml;
+        if (type === 'multiple-choice' || type === 'checkboxes') {
+            optionHtml = `
+                <div class="option">
+                    <input type="${type === 'multiple-choice' ? 'radio' : 'checkbox'}" disabled>
+                    <input type="text" class="form-control option-label" value="Option ${optionIndex}">
+                    <span class="delete-option-icon">&times;</span>
+                </div>
+            `;
+        } else if (type === 'dropdown') {
+            optionHtml = `
+                <div class="option">
+                    <input type="text" class="form-control option-label" value="Option ${optionIndex}">
+                    <span class="delete-option-icon">&times;</span>
+                </div>
+            `;
+        }
+        container.append(optionHtml);
+    }
+
+    // Form section function
+    function createFormSection() {
+        let newSection = `
+            <div class="form-section" data-index="${index}">
+                <div class="header-row">
+                    ${index === 1 ? '<div class="violet-border"></div>' : ''}
+                    <textarea class="form-control untitled-question" placeholder="Untitled Question" rows="1"></textarea>
+                    <select class="custom-select">
+                        <option value="short-answer">Short Answer</option>
+                        <option value="paragraph">Paragraph</option>
+                        <option value="multiple-choice">Multiple Choice</option>
+                        <option value="checkboxes">Checkboxes</option>
+                        <option value="dropdown">Dropdown</option>
+                    </select>
+                    <label class="toggle-switch">
+                        <input type="checkbox" class="required-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="delete-section-icon"><i class="fas fa-trash-alt"></i></span>
+                </div>
+                <div class="options-container"></div>
+            </div>
+        `;
+        $('#form-container').append(newSection);
+        index++;
+
+        positionAddSectionButton();
+    }
+
+    function positionAddSectionButton() {
+        if (activeSection) {
+            let position = activeSection.position();
+            let buttonWidth = $('#add-section-btn').outerWidth();
+            let buttonHeight = $('#add-section-btn').outerHeight();
+
+            $('#add-section-btn').css({
+                position: 'absolute',
+                left: position.left - buttonWidth - 47 + 'px',
+                top: position.top + activeSection.height() / 2 - buttonHeight / 2 + 'px'
+            });
+        }
+    }
+
+    // Event handler is triggered
+    // creates a new form section;sets it as active;repositions the add section button
+    $('#add-section-btn').on('click', function() {
+        createFormSection();
+        $('.form-section').removeClass('active');
+        activeSection = $('.form-section').last();
+        activeSection.addClass('active');
+        positionAddSectionButton();
+    });
+
+    // It updates the options container based on the selected type, adding the necessary input fields or buttons.
+    $(document).on('change', '.custom-select', function() {
+        let type = $(this).val();
+        let container = $(this).closest('.form-section').find('.options-container');
+        container.empty();
+
+        $(this).closest('.form-section').find('.add-option-btn').remove();
+
+        if (type === 'short-answer') {
+            container.append('<input type="text" class="form-control" disabled placeholder="Short answer text">');
+        } else if (type === 'paragraph') {
+            container.append('<textarea class="form-control" disabled placeholder="Paragraph text"></textarea>');
+        } else {
+            addOption(type, container);
+            $(this).closest('.form-section').append('<button class="btn btn-secondary add-option-btn">Add Option</button>');
+        }
+    });
+
+    // add option event handler
+    // adds a new option to the options container and updates the option numbers
+    $(document).on('click', '.add-option-btn', function() {
+        let type = $(this).closest('.form-section').find('.custom-select').val();
+        let container = $(this).closest('.form-section').find('.options-container');
+        addOption(type, container);
+        // refreshOptionNumbers(container);
+    });
+
+    // removes the section;updates the active section;repositions add section button
+    $(document).on('click', '.delete-section-icon', function() {
+        let section = $(this).closest('.form-section');
+        let prevSection = section.prev('.form-section');
+        let nextSection = section.next('.form-section');
+        section.remove();
+        if (section.hasClass('active')) {
+            activeSection = null;
+        }
+        if (prevSection.length > 0) {
+            prevSection.find('.delete-section-icon').appendTo(prevSection.find('.form-section'));
+            activeSection = prevSection;
+        } else if (nextSection.length > 0) {
+            nextSection.find('.delete-section-icon').appendTo(nextSection.find('.form-header'));
+            activeSection = nextSection;
+        }
+
+        positionAddSectionButton();
+    });
+
+    // delete option
+    $(document).on('click', '.delete-option-icon', function() {
+        let option = $(this).closest('.option');
+        let container = option.closest('.options-container');
+        option.remove();
+K    });
+
+    // Event handler for required toggle button
+    $(document).on('click', '.required-toggle', function() {
+        $(this).closest('.form-section').toggleClass('required');
+    });
+
+    // Preview button functionality
+    $('#preview-btn').on('click', function() {
+        let previewWindow = window.open('', '_blank');
+        let previewContent = `
+            <html>
+            <head>
+                <title>Form Preview</title>
+                <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    body { background-color: rgb(240, 235, 248); }
+                    .container { margin-top: 30px; }
+                    .form-section {background-color: white;width: 56%;margin-bottom: 30px;margin-left: 240px;padding: 20px;position: relative;align-items: center;border-radius: 10px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+                    .form-header {background-color: white;padding: 20px;margin-bottom: 10px;margin-left: 240px;border-radius: 10px 10px 0 0;display: flex;justify-content: space-between;align-items: center; position: relative;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);border-top: 10px solid rgb(103, 58, 183);width: 56%; }
+                    .form-section h2 { text-align: center; margin-bottom: 30px; }
+                    .form-section .question-section { margin-bottom: 20px; } /* Add margin-bottom to the question section */
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="form-header">
+                        <h2>Untitled Form</h2>
+                    </div>
+        `;
+        $('.form-section').each(function() {
+            previewContent += '<div class="form-section">';
+            previewContent += '<div class="question-section">';
+            previewContent += '<textarea class="form-control question-label" disabled>' + $(this).find('.untitled-question').val() + '</textarea>';
+            previewContent += '</div>';
+            let type = $(this).find('.custom-select').val();
+            let optionsContainer = $(this).find('.options-container');
+
+            if (type === 'multiple-choice') {
+                optionsContainer.find('.option').each(function() {
+                    previewContent += `
+                        <div class="option">
+                            <input type="radio" name="option-${index}">
+                            <label>${$(this).find('.option-label').val()}</label>
+                        </div>
+                    `;
+                });
+            } else if (type === 'checkboxes') {
+                optionsContainer.find('.option').each(function() {
+                    previewContent += `
+                        <div class="option">
+                            <input type="checkbox">
+                            <label>${$(this).find('.option-label').val()}</label>
+                        </div>
+                    `;
+                });
+            } else if (type === 'short-answer') {
+                previewContent += '<input type="text" class="form-control" placeholder="Short answer text">';
+            } else if (type === 'paragraph') {
+                previewContent += '<textarea class="form-control" placeholder="Paragraph text"></textarea>';
+            } else if (type === 'dropdown') {
+                let dropdownHtml = '<select class="form-control">';
+                optionsContainer.find('.option .option-label').each(function() {
+                    dropdownHtml += `<option>${$(this).val()}</option>`;
+                });
+                dropdownHtml += '</select>';
+                previewContent += dropdownHtml;
+            }
+            previewContent += '</div>';
+        });
+        previewContent += `
+                    <button class="btn btn-success" style="margin-left: 240px; margin-top: 20px">Submit</button>
+                </div>
+            </body>
+            </html>
+        `;
+        previewWindow.document.write(previewContent);
+        previewWindow.document.close();
+    });
+
+    // Activate the section;repositions add section button
+    $(document).on('click', '.form-section', function() {
+        $('.form-section').removeClass('active');
+        $(this).addClass('active');
+        activeSection = $(this);
+        positionAddSectionButton();
+    });
+
+    $('#form-container').sortable({
+        placeholder: 'ui-state-highlight',
+        start: function (event, ui) {
+            ui.placeholder.height(ui.item.height());
+        },
+        stop: function (event, ui) {
+            positionAddSectionButton();
+        }
+    });
+
+    $('#form-container').disableSelection();
+});
+i have shared with you my html file as well as the js file,
+i want you to update the js file in such a way that once i click the submit button in the forms ui section i want them to get updated in the database through post data.
+each of the question text or the options i create and the type of question such as dropdown or checkbox,try to enclose every data under an active form ,in a similar way as you fetched all the information to show in the preview window. 
+
+ for each of the question text in each div created , i want to save in the text colomn in the questions table and for the type of question that is dropdown or multiple choice or checkbox etc i want to save them as 1,2,3,4 or 5 in the type colomn in the questions table and if the required button is selected it should reflect in the required colomn in the table as 0 or 1, for the options created in each of the div tag or the question tag should be saved in the text colomn in the options table.
+so that i can retreive the data when required.
+i want you also to create all the controllers and the models and the view required to perform the above task,i have created a login page after authorization the user is able to create the form
+so with respect to that particular users id , all the above contents should be updated in the database
+i will explain you the structure of my database
+ have also created a database in the phpmyadmin as google_forms wherein i currently have 4 tables as users,forms,questions,options 
+in the users table  id,username,email,password,created_at where id isthe primary key .
+The forms table has id,user_id as the foreign key which is refernced to the id from users table,created_at and description colomn.
+questions table has id as the primary key,form_id as the foreign key which is referenced to the id from the forms table ,text,type,required ,created_at.
+and  the options table has id as the primary key ,question_id as the foreign key which is referenced to the id from the questions table.
+finally i want a updation in my js file and html file as suggested 
+and i want all the controller and models to perform this task in the codeigniter

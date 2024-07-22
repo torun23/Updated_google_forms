@@ -1,0 +1,320 @@
+**********MODEL****************
+
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Form_model extends CI_Model {
+
+    public function save_form($form_data) {
+        $this->db->trans_start();
+
+        foreach ($form_data as $section) {
+            $question_data = array(
+                'form_id' => $section['form_id'],
+                'text' => $section['text'],
+                'type' => $section['type'],
+                'required' => $section['required'],
+                'created_at' => date('Y-m-d H:i:s')
+            );
+
+            $this->db->insert('questions', $question_data);
+            $question_id = $this->db->insert_id();
+
+            foreach ($section['options'] as $option_text) {
+                $option_data = array(
+                    'question_id' => $question_id,
+                    'text' => $option_text,
+                    'created_at' => date('Y-m-d H:i:s')
+                );
+
+                $this->db->insert('options', $option_data);
+            }
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+********************Controller**********************
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Form extends CI_Controller {
+
+    public function __construct() {
+        parent::__construct();
+        $this->load->model('Form_model');
+    }
+
+    public function submit() {
+        $form_data = json_decode($this->input->raw_input_stream, true);
+
+        if ($this->Form_model->save_form($form_data)) {
+            $response = array('status' => 'success', 'message' => 'Form submitted successfully.');
+        } else {
+            $response = array('status' => 'error', 'message' => 'Error submitting form.');
+        }
+
+        echo json_encode($response);
+    }
+}
+***********UPDATED HTML*************************
+### Updated HTML
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Form Clone</title>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/jquery-ui.css">
+    <style>
+        .navbar-custom {
+            background-color: rgb(103, 58, 183);
+            color: white;
+            border-radius: 0;
+        }
+
+        .navbar-custom .navbar-brand {
+            color: white;
+            font-size: 18px;
+        }
+
+        .navbar-custom .navbar-nav>li>a {
+            color: white;
+            font-size: 16px;
+        }
+
+        #submit-btn {
+            margin-top: 20px;
+            float: left;
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-custom">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="<?php echo base_url(); ?>home/index2">Google Forms</a>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>home/index3">Home</a>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>home/index1">About</a>
+            </div>
+            <div id="navbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <a class="navbar-brand" href="<?php echo base_url(); ?>users/logout">Logout</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-header">
+            <button id="preview-btn" class="btn btn-info"><i class="fas fa-eye"></i></button>
+            <h2>Untitled Form</h2>
+            <button id="add-section-btn" class="btn btn-primary">+</button>
+        </div>
+        <div id="form-container"></div>
+
+        <input type="hidden" id="form-id" value="YOUR_FORM_ID"> <!-- Ensure to set the form ID dynamically -->
+        <button id="submit-btn" class="btn btn-success">Submit</button>
+    </div>
+
+    <script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/bootstrap.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/jquery-ui.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/scripts.js'); ?>"></script>
+    <script>
+        $(document).ready(function() {
+            $('#add-section-btn').on('click', function() {
+                let newSection = `
+                    <div class="form-section">
+                        <input type="text" class="untitled-question" placeholder="Untitled Question">
+                        <select class="custom-select">
+                            <option value="text">Text</option>
+                            <option value="multiple_choice">Multiple Choice</option>
+                        </select>
+                        <input type="checkbox" class="required-toggle"> Required
+                        <div class="options-container">
+                            <button class="add-option-btn btn btn-secondary">Add Option</button>
+                        </div>
+                    </div>`;
+                $('#form-container').append(newSection);
+            });
+
+            $(document).on('click', '.add-option-btn', function() {
+                let optionInput = '<input type="text" class="option-label" placeholder="Option">';
+                $(this).before(optionInput);
+            });
+
+            $('#submit-btn').on('click', function() {
+                let formData = collectFormData();
+
+                $.ajax({
+                    url: '<?php echo base_url(); ?>form/submit',
+                    type: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function(response) {
+                        alert('Form submitted successfully!');
+                        console.log(response);
+                    },
+                    error: function(error) {
+                        alert('Error submitting form!');
+                        console.log(error);
+                    }
+                });
+            });
+
+            function collectFormData() {
+                let formData = [];
+                let formId = $('#form-id').val();
+
+                $('.form-section').each(function() {
+                    let questionText = $(this).find('.untitled-question').val();
+                    let type = $(this).find('.custom-select').val();
+                    let required = $(this).find('.required-toggle').is(':checked');
+                    let options = [];
+
+                    $(this).find('.option-label').each(function() {
+                        options.push($(this).val());
+                    });
+
+                    formData.push({
+                        form_id: formId,
+                        text: questionText,
+                        type: type,
+                        required: required,
+                        options: options
+                    });
+                });
+
+                return formData;
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+
+*************************************88*************************
+new Controller
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Questions extends CI_Controller {
+
+    public function __construct() {
+        parent::__construct();
+        // Load necessary models and libraries here
+        $this->load->model('Form_model'); // Load your Form_model
+    }
+
+    public function save() {
+        // Handle AJAX post data
+        $form_data = $this->input->post('form_data'); // Assuming your AJAX post sends 'form_data'
+
+        if (!empty($form_data)) {
+            foreach ($form_data as $section) {
+                $question_data = array(
+                    'form_id' => $section['form_id'],
+                    'text' => $section['text'],
+                    'type' => $section['type'],
+                    'required' => $section['required'],
+                    'created_at' => date('Y-m-d H:i:s')
+                );
+
+                $question_id = $this->Form_model->save_question($question_data);
+
+                // Save options for this question
+                foreach ($section['options'] as $option_text) {
+                    $option_data = array(
+                        'question_id' => $question_id,
+                        'text' => $option_text,
+                        'created_at' => date('Y-m-d H:i:s')
+                    );
+
+                    $this->Form_model->save_option($option_data);
+                }
+            }
+
+            echo json_encode(array('success' => true));
+        } else {
+            echo json_encode(array('success' => false));
+        }
+    }
+
+}
+******************************newMODEL**********
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Form_model extends CI_Model {
+
+    public function save_question($question_data) {
+        $this->db->insert('questions', $question_data);
+        return $this->db->insert_id();
+    }
+
+    public function save_option($option_data) {
+        $this->db->insert('options', $option_data);
+    }
+
+}
+******************JAVASCRIPT************updatead
+function collectFormData() {
+    let formData = [];
+    let formId = $('#form-id').val();
+
+    $('.form-section').each(function() {
+        let questionText = $(this).find('.untitled-question').val();
+        let type = $(this).find('.custom-select').val();
+        let required = $(this).find('.required-toggle').is(':checked');
+        let options = [];
+
+        $(this).find('.option-label').each(function() {
+            options.push($(this).val());
+        });
+
+        formData.push({
+            form_id: formId,
+            text: questionText,
+            type: type,
+            required: required,
+            options: options
+        });
+    });
+
+    $.ajax({
+        url: 'Questions/save', // Endpoint to handle saving questions
+        type: 'POST',
+        dataType: 'json',
+        data: { form_data: formData },
+        success: function(response) {
+            if (response.success) {
+                alert('Form data saved successfully!');
+                // Handle success actions
+            } else {
+                alert('Failed to save form data.');
+                // Handle failure actions
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('Error: ' + error);
+            // Handle error actions
+        }
+    });
+}
