@@ -6,39 +6,44 @@
     <title>Form Preview - Google Forms</title>
     <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/response_submit.css">
-    <style>
-        .required-field::after {
-            content: '*';
-            color: red;
-            margin-left: 5px;
-        }
-        .form-section {
-            background-color: white;
-            margin-bottom: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        .question-container {
-            margin-bottom: 20px;
-        }
-    </style>
+
     <script>
-        function validateForm() {
-            let isValid = true;
-            document.querySelectorAll('.question-container').forEach(function(container) {
-                let isRequired = container.dataset.required === '1';
-                let inputs = container.querySelectorAll('input[type="text"], textarea, select, input[type="radio"]:checked, input[type="checkbox"]:checked');
-                if (isRequired && inputs.length === 0) {
-                    container.style.border = '2px solid red';
-                    isValid = false;
-                } else {
-                    container.style.border = 'none';
-                }
-            });
-            return isValid;
-        }
-    </script>
+    function validateForm() {
+        let isValid = true;
+        document.querySelectorAll('.question-container').forEach(function(container) {
+            let isRequired = container.dataset.required === '1';
+            let questionType = container.dataset.type;
+            let isAnswered = false;
+
+            // Select inputs relevant to the question type
+            let inputs = container.querySelectorAll('input[type="text"], textarea, select, input[type="radio"]:checked, input[type="checkbox"]:checked');
+            if (inputs.length > 0) {
+                inputs.forEach(function(input) {
+                    if (input.type === 'text' || input.tagName.toLowerCase() === 'textarea') {
+                        if (input.value.trim() !== '') {
+                            isAnswered = true;
+                        }
+                    } else if (input.type === 'radio' || input.type === 'checkbox') {
+                        isAnswered = true;
+                    } else if (input.tagName.toLowerCase() === 'select') {
+                        if (input.value.trim() !== '') {
+                            isAnswered = true;
+                        }
+                    }
+                });
+            }
+
+            if (isRequired && !isAnswered) {
+                container.style.border = '2px solid purple';
+                isValid = false;
+            } else {
+                container.style.border = 'none';
+            }
+        });
+        return isValid;
+    }
+</script>
+
 </head>
 <body>
 <div class="container">
@@ -82,7 +87,7 @@
                 </div>
             <?php endforeach; ?>
         </div>
-        <button type="submit" class="btn btn-success" style="display: block; margin: 20px auto 20px 240px;">Submit</button>
+        <button type="submit" class="btn btn-success" style="display: block; margin: 20px auto 20px 240px; background-color: rgb(103, 58, 183); border-color: rgb(103, 58, 183); color: white;">Submit</button>
     </form>
 </div>
 </body>

@@ -112,3 +112,5 @@ a.pagination-link{
 #basetable1 th, #basetable1 td {
     border: 1px solid #3333336c; /* Darker border color for table cells */
 }
+/* Custom DataTables pagination styles */
+

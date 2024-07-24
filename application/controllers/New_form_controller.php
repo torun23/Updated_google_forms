@@ -12,7 +12,6 @@ class New_form_controller extends CI_Controller {
 
         // Decode the formData from the POST request
         $formData = $this->input->post('formData');
-
         // Check if form_id is set in session
         $formId = $this->session->userdata('form_id');
         if ($formId) {

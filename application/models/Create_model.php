@@ -20,7 +20,7 @@ class Create_model extends CI_Model {
         $formId = $this->db->insert_id();
         $this->session->set_userdata('form_id', $formId);
 
-
+return $formId;
     }
 
 }

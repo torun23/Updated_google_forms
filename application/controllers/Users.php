@@ -35,9 +35,10 @@ class Users extends CI_Controller
  * @return mixed(data return type)
  * @author torun
  */
-    public function login()
+    public function login($form_id = null)
     {
         $data['title'] = 'Sign In';
+        $data['form_id'] = $form_id;
 
         $this->form_validation->set_rules('username', 'Username', 'required');
         $this->form_validation->set_rules('password', 'Password', 'required');
@@ -71,7 +72,11 @@ class Users extends CI_Controller
                 // Set message
                 $this->session->set_flashdata('user_loggedin', 'You are now logged in');
 
-                redirect('default_page');
+                if ($form_id) {
+                    redirect('forms/response_preview/'.$form_id);
+                } else {
+                    redirect('home');                }
+             
             } else {
                 // Set message
                 $this->session->set_flashdata('login_failed', 'Login is invalid');

@@ -39,7 +39,7 @@ class Form_controller extends CI_Controller {
 $this->load->model('Frontend_model');
 $this->Frontend_model->deleteForm($id);
 $this->session->set_flashdata('status','Form data deleted successfully');
-redirect('default_page');
+redirect('home');
 	}
     public function __construct() {
         parent::__construct();
@@ -60,16 +60,33 @@ redirect('default_page');
 
     // Save the edited form
     public function update_form() {
-        $form_id = $this->input->post('form_id');
-        $title = $this->input->post('title');
-        $description = $this->input->post('description');
-        $questions = $this->input->post('questions');
-
-        $this->Updation_model->update_form($form_id, $title, $description);
-        $this->Updation_model->update_questions($form_id, $questions);
-
-        echo json_encode(['status' => 'success']);
+        $formData = $this->input->post('formData');
+        
+        if (!$formData) {
+            echo json_encode(['status' => 'error', 'message' => 'Form data is missing']);
+            return;
+        }
+    
+        $form_id = $formData['form_id'];
+        $title = $formData['title'];
+        $description = $formData['description'];
+        $questions = $formData['questions'];
+    
+        $this->load->model('Updation_model');
+        $updateStatus = $this->Updation_model->update_form_data($form_id, $title, $description, $questions);
+    
+        if ($updateStatus) {
+            echo json_encode(['status' => 'success', 'message' => 'Form updated successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update form data']);
+        }
     }
+    
+    
+    
+    
+    
+    
 	public function index_forms_draft($form_id = null) {
 		$this->load->model('Frontend_model');
 	

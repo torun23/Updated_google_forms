@@ -40,3 +40,18 @@ body { background-color: rgb(240, 235, 248); }
 .option input[type="checkbox"] { 
     margin-right: 10px; 
 }
+.required-field::after {
+    content: '*';
+    color: red;
+    margin-left: 5px;
+}
+.form-section {
+    background-color: white;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+.question-container {
+    margin-bottom: 20px;
+}

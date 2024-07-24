@@ -12,8 +12,7 @@
 <input type = "text" name ="description" class="form-control" placeholder = "Form Description" required autofocus>
 
 </div>
-<button type = "submit" class = "btn btn-primary btn-block">Create</button>
+<button type = "submit" class = "btn btn-primary btn-block" >Create</button>
 </div>
 </div>
         
-<?php echo form_close(); ?>

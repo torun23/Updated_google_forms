@@ -7,14 +7,12 @@
     <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/styles.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/header_styles.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/jquery-ui.css">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     
 </head>
 <body>
@@ -23,15 +21,15 @@
     <div class="container" style="background-color: rgb(103, 58, 183);">
         <?php if ($this->session->userdata('logged_in')): ?>
             <div class="navbar-header">
-                <a class="navbar-brand" href="<?php echo base_url(); ?>Form_controller/index_forms">Google Forms</a>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>">Google Forms</a>
             </div>
         <?php endif; ?>
 
         <div id="navbar">
             <ul class="nav navbar-nav">
                 <?php if ($this->session->userdata('logged_in')): ?>
-                    <li><a href="<?php echo base_url(); ?>Publish_controller/list_user_published_forms">Published Forms</a></li>
-                    <li><a href="<?php echo base_url(); ?>Form_controller/index_forms_draft">Drafts</a></li>
+                    <li><a href="<?php echo base_url(); ?>published_forms">Published Forms</a></li>
+                    <li><a href="<?php echo base_url(); ?>drafts">Drafts</a></li>
 
                 <?php endif; ?>
             </ul>
@@ -41,7 +39,7 @@
                     <li><a href="<?php echo base_url(); ?>users/register">Register</a></li>
                 <?php endif; ?>
                 <?php if ($this->session->userdata('logged_in')): ?>
-                    <li><a href="<?php echo base_url(); ?>home/title">Create Form</a></li>
+                    <li><a href="<?php echo base_url(); ?>title">Create Form</a></li>
                     <li><a href="<?php echo base_url(); ?>users/logout">Logout</a></li>
                 <?php endif; ?>
             </ul>

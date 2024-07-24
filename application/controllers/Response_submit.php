@@ -14,7 +14,7 @@ class Response_submit extends CI_Controller {
         $data['questions'] = $questions;
 
         // Redirect to the view_responses function in the Response_submit controller
-        redirect('Response_submit/view_responses/' . $form_id);
+        redirect('responses/' . $form_id);
     }
 
     public function view_responses($form_id) {
@@ -66,7 +66,7 @@ class Response_submit extends CI_Controller {
             $this->Response_model->insert_response_answer($data);
         }
     
-        redirect('Response_submit/view_responses/' . $form_id);
+        redirect('responses/' . $form_id);
     }
     
     

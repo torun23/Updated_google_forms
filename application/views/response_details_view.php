@@ -5,27 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Response Details</title>
     <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.min.css">
-    <style>
-        .form-header {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .form-description, .submitted-at, .user-email {
-            color: rgba(0, 0, 0, 0.5); /* Transparent text */
-            margin-bottom: 10px;
-            text-align: left;
-        }
-        .form-section {
-            margin-bottom: 20px;
-        }
-        .question-section {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/response_details_view.css">
 </head>
 <body>
 <div class="container">

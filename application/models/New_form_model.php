@@ -13,7 +13,7 @@ class New_form_model extends CI_Model {
                 'form_id' => $formId,
                 'text' => $question['text'],
                 'type' => $question['type'],
-                'required' => isset($question['required']) && $question['required'] == 'true' ? 1 : 0
+                'is_required' => isset($question['is_required']) && $question['is_required'] == 'true' ? 1 : 0
             ];
     
             $this->db->insert('questions', $questionData);

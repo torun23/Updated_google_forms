@@ -37,4 +37,34 @@ class Form_model extends CI_Model {
             return true;
         }
     }
+    public function __construct() {
+        $this->load->database();
+    }
+
+    public function get_form_title($form_id) {
+        $this->db->select('title'); // Assuming the title column in the forms table is called 'title'
+        $this->db->from('forms');
+        $this->db->where('id', $form_id);
+        $query = $this->db->get();
+        
+        if ($query->num_rows() > 0) {
+            return $query->row()->title;
+        } else {
+            return null;
+        }
+    }
+    
+    public function get_form_description($form_id) {
+        $this->db->select('description'); // Assuming the title column in the forms table is called 'title'
+        $this->db->from('forms');
+        $this->db->where('id', $form_id);
+        $query = $this->db->get();
+        
+        if ($query->num_rows() > 0) {
+            return $query->row()->description;
+        } else {
+            return null;
+        }
+    }
+    
 }

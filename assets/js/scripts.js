@@ -30,7 +30,7 @@ function addOption(type, container) {
             <div class="form-section" data-index="${index}">
                 <div class="header-row">
                     ${index === 1 ? '<div class="violet-border"></div>' : ''}
-                    <textarea class="form-control untitled-question" placeholder="Untitled Question" rows="1"></textarea>
+                    <input type="text" class="form-control untitled-question" placeholder="Untitled Question" rows="1">
                     <select class="custom-select">
                         <option value="short-answer">Short Answer</option>
                         <option value="paragraph">Paragraph</option>
@@ -127,35 +127,15 @@ function addOption(type, container) {
     });
 
     $('#preview-btn').on('click', function() {
-        let previewWindow = window.open('', '_blank');
-        let previewContent = `
-            <html>
-            <head>
-                <title>Form Preview</title>
-                <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-                <style>
-                    body { background-color: rgb(240, 235, 248); }
-                    .container { margin-top: 30px; }
-                    .form-section {background-color: white;width: 56%;margin-bottom: 30px;margin-left: 240px;padding: 20px;position: relative;align-items: center;border-radius: 10px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-                    .form-header {background-color: white;padding: 20px;margin-bottom: 10px;margin-left: 240px;border-radius: 10px 10px 0 0;display: flex;justify-content: space-between;align-items: center; position: relative;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);border-top: 10px solid rgb(103, 58, 183);width: 56%; }
-                    .form-section h2 { text-align: center; margin-bottom: 30px; }
-                    .form-section .question-section { margin-bottom: 20px; } /* Add margin-bottom to the question section */
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="form-header">
-                        <h2>Untitled Form</h2>
-                    </div>
-        `;
+        let previewContent = '';
         $('.form-section').each(function() {
             previewContent += '<div class="form-section">';
             previewContent += '<div class="question-section">';
-            previewContent += '<textarea class="form-control question-label" disabled>' + $(this).find('.untitled-question').val() + '</textarea>';
+            previewContent += '<div class="question-label">' + $(this).find('.untitled-question').val() + '</div>';
             previewContent += '</div>';
             let type = $(this).find('.custom-select').val();
             let optionsContainer = $(this).find('.options-container');
-
+    
             if (type === 'multiple-choice') {
                 optionsContainer.find('.option').each(function() {
                     previewContent += `
@@ -188,16 +168,21 @@ function addOption(type, container) {
             }
             previewContent += '</div>';
         });
-        previewContent += `
-                        <button  class="btn btn-success" style="margin-left: 240px; margin-top: 20px">Submit</button>
-                </div>
-            </body>
-            </html>
-        `;
-        previewWindow.document.write(previewContent);
-        previewWindow.document.close();
+    
+        $.ajax({
+            url: base_url+'form/preview',
+            type: 'POST',
+            data: {
+                form_content: previewContent,
+                title: '<?php echo htmlspecialchars($title); ?>' // Assuming you have the title available in your JS
+            },
+            success: function() {
+                window.location.href = base_url+'form/preview';
+            }
+        });
     });
-
+    
+    
     $(document).on('click', '.form-section', function() {
         $('.form-section').removeClass('active');
         $(this).addClass('active');
@@ -225,7 +210,7 @@ function addOption(type, container) {
             var questionData = {
                 text: $(this).find('.untitled-question').val(),
                 type: questionType,
-                required: $(this).find('.required-toggle').is(':checked'),
+                is_required: $(this).find('.required-toggle').is(':checked'),
                 options: []
             };
     
@@ -239,7 +224,7 @@ function addOption(type, container) {
             formData.questions.push(questionData);
         });
     
-        // console.log(formData);
+        console.log(formData);
         return formData;
     }
     
@@ -282,7 +267,7 @@ function addOption(type, container) {
                     window.location.href = base_url + 'Form_controller/index_forms';
                 } else {
                     alert(response.message);
-                    console.log(response);
+                    // console.log(response);
                 }
             },
             error: function(error) {

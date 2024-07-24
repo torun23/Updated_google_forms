@@ -23,4 +23,30 @@ class Form extends CI_Controller {
 
         echo json_encode($response);
     }
+
+    public function view($form_id) {
+        $data['title'] = $this->Form_model->get_form_title($form_id);
+        $data['description'] = $this->Form_model->get_form_description($form_id);
+
+        if ($data['title'] === null) {
+            show_404(); // Show 404 if form_id is invalid
+        }
+        if ($data['description'] === null) {
+            show_404(); // Show 404 if form_id is invalid
+        }
+
+		$this->load->view('templates/forms_ui',$data);
+    }
+    public function preview() {
+        $form_content = $this->input->post('form_content');
+        $title = $this->input->post('title');
+    
+        $data = [
+            'form_content' => $form_content,
+            'title' => $title
+        ];
+    
+        $this->load->view('formview', $data);
+    }
+    
 }

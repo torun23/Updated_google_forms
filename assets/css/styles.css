@@ -3,6 +3,17 @@ body {
     background-color: rgb(240, 235, 248);
     font-family: Arial, sans-serif;
 }
+.form-section h2 { 
+    text-align: center; 
+    margin-bottom: 30px; 
+}
+
+.form-section .question-section { 
+    margin-bottom: 20px; 
+}
+/* Navbar custom styles */
+
+
 .container {
     position: relative;
     margin-top: 30px;
@@ -150,8 +161,8 @@ body {
 
 
 .add-option-btn {
-    background-color: #f0f0f0; 
-    color: #333; 
+    background-color: rgb(66, 133, 244); 
+    /* color: rgb(66, 133, 244); */
     margin-top: 11px;
     font-size: 0.9em;
 
@@ -215,4 +226,33 @@ input:checked + .slider:before {
 }
 .body_header_bg{
   background-color: rgb(240,235,248);
+}
+table a:not(.btn) {
+    color: blue !important;
+}
+
+table a:not(.btn):hover {
+    color: darkblue !important;
+}
+/* .btn-success {
+    color: #ffffff;
+    background-color: rgb(103, 58, 183);
+    border-color: rgb(103, 58, 183);
+} */
+.btn-custom {
+    margin-top: 20px;
+    position: relative;
+    left: 240px;
+    background-color: rgb(103, 58, 183);
+    border-color: rgb(103, 58, 183);
+    color: white;
+}
+
+/* Assuming you have a stylesheet named styles.css */
+.btn.btn-primary.btn-block {
+margin-top: 20px;
+position: relative;
+background-color: rgb(103, 58, 183);
+border-color: rgb(103, 58, 183);
+color: white;
 }

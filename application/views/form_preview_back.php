@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Preview - Google Forms</title>
     <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/form_preview_back.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/form_preview.css">
+   
 </head>
 <body>
 <div class="container">
     <div class="form-header">
         <h2><?php echo $form->title; ?></h2>
+        <br>
         <h4><?php echo $form->description; ?></h4>
     </div>
 
     <?php foreach ($questions as $question): ?>
         <div class="form-section">
             <div class="question-section">
-                <input type="text" class="form-control question-label" value="<?php echo $question->text; ?>" disabled>
+                <p class="question-label"><?php echo $question->text; ?></p>
             </div>
 
             <?php if ($question->type == 'multiple-choice'): ?>
@@ -57,8 +59,8 @@
             <?php endif; ?>
         </div>
     <?php endforeach; ?>
-
-    <a href="<?php echo base_url('Publish_controller/list_user_published_forms'); ?>" class="btn btn-success" style="margin-top: 20px; position: relative; left: 240px;">Back</a>
+<a href="<?php echo base_url('published_forms'); ?>" class="btn btn-success">Back</a>
+<br>
 </div>
 </body>
 </html>
