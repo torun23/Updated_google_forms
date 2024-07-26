@@ -1,0 +1,36 @@
+
+.form-header {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.form-description, .submitted-at, .user-email {
+color: rgba(0, 0, 0, 0.5); /* Transparent text */
+margin-bottom: 10px;
+text-align: left; /* Align text left */
+display: block; /* Ensure each element is a block element */
+width: 100%; /* Ensure each element takes the full width of the container */
+padding-left: 0; /* Ensure no padding is affecting alignment */
+}
+
+.form-section {
+    margin-bottom: 20px;
+}
+.question-section {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+.container {
+width: 65%; /* Or any specific width */
+/* text-align: left; Ensure the container itself is aligned left */
+padding: 0; /* Ensure no padding is affecting alignment */
+margin: 0 auto; /* Center the container if needed */
+}
+.question-label {
+    display: inline; /* Ensure it displays inline rather than as a block */
+    background: none; /* Remove any background color */
+    margin: 0; /* Remove any margins if applied */
+    padding: 0; /* Remove any padding if applied */
+}

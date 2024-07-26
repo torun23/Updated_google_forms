@@ -1,0 +1,62 @@
+
+.navbar-container {
+    max-width: 100%; 
+    margin: 0 auto; 
+    padding: 0 15px; 
+}
+
+/* Navbar styles */
+.navbar-custom {
+    background-color: rgb(103, 58, 183); 
+    border-radius: 0;
+    height: 70px; 
+    display: flex;
+    align-items: center; 
+    padding: 0;
+}
+
+/* Brand styling */
+.navbar-custom .navbar-brand {
+    color: #fff; 
+    font-size: 19px;
+    margin-right: 20px; 
+    padding: 15px 10px;
+}
+
+
+.navbar-custom .navbar-nav {
+    display: flex;
+    align-items: center; 
+    margin-left: -17px; 
+    padding: 0;
+    flex: 1; 
+}
+.navbar-custom .navbar-nav li {
+    margin: 0 10px;
+}
+
+.navbar-custom .navbar-nav li a {
+    color: #fff; 
+    background-color: transparent; 
+    font-size: 15px; 
+    height: 70px; 
+    padding: 15px 10px; 
+    transition: none; 
+}
+
+.navbar-custom .navbar-nav.navbar-right {
+    margin-left: auto; 
+    display: flex;
+    align-items: center; 
+}
+
+.navbar-custom .navbar-nav.navbar-right li {
+    margin: 0 10px; 
+}
+
+
+#add-section-btn {
+    position: absolute;
+    
+}
+
