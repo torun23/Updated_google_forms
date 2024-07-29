@@ -1,0 +1,76 @@
+.form-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    margin-top: -56px;
+
+}
+
+.form-title,
+.form-description {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+}
+
+.form-title:focus,
+.form-description:focus {
+    box-shadow: none;
+    outline: none;
+    border-bottom: 1px solid #007bff;
+}
+.option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px; /* Space between options */
+}
+
+.option i.icon-transparent {
+    opacity: 0.5; /* Make the icon transparent */
+    margin-right: 10px; /* Space between icon and option box */
+    font-size: 10px; /* Adjust icon size here */
+
+}
+
+.option .form-control.option-label {
+    flex: 1; /* Ensure the input field takes up the remaining space */
+}
+
+.option .delete-option-icon {
+    margin-left: 10px; /* Space between option box and delete icon */
+    cursor: pointer; /* Show pointer cursor on hover */
+}
+.option .form-control.option-label {
+    width: 44%; /* Adjust the percentage as needed */
+    flex: none; /* Ensure it doesn't automatically adjust its size based on the parent container */
+}
+/* Style for the submit button */
+#submit-btn {
+    display: block;
+    margin: 6px auto 30px 0; /* Top, Right, Bottom, Left Margin */
+    padding: 10px 20px; /* Adjust padding for button size */
+    background-color: rgb(103, 58, 183); /* Button color */
+    border-color: rgb(103, 58, 183); /* Border color */
+    color: white; /* Text color */
+    text-align: center; /* Center text inside the button */
+    float: left; /* Align button to the left */
+}
+
+/* Style for the container */
+.container {
+    padding-bottom: 2px; /* Space between container content and bottom of the page */
+    padding-top: none;
+}
+
+/* Optional: Adding padding to body */
+body {
+    padding-bottom: 10px; /* Space between page content and bottom of the viewport */
+}
+#add-section-btn {
+    position: relative; /* Position relative to its normal position */
+    left: -350px; /* Move 20px to the right from its normal position */
+    top: 80px; /* Move 10px down from its normal position */
+}
